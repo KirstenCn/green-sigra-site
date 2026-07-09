@@ -1,0 +1,646 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Green Sigra — 儀表板原型 v2.1</title>
+<style>
+:root{
+  --ink:#0E1F17; --ink-2:#3F544A; --ink-3:#7A8B81;
+  --paper:#F2F5F1; --surface:#FFFFFF; --line:#E3E9E2; --line-2:#CDD8CD;
+  --green:#1E6B4E; --green-deep:#0C3B2A; --leaf:#5ECF8B; --leaf-soft:#E3F4E9;
+  --blue:#2E5FB7; --blue-wash:#EBF1FA;
+  --amber:#B06508; --amber-wash:#FAF1E2;
+  --red:#B23A2B; --red-wash:#FAECE9;
+  --shadow:0 1px 3px rgba(14,31,23,.05);
+  --shadow-up:0 10px 30px rgba(14,31,23,.14);
+  --r:14px; --mono:ui-monospace,"SF Mono",Menlo,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:"PingFang TC","Noto Sans TC",-apple-system,sans-serif;
+  background:var(--paper); color:var(--ink); font-size:13.5px; line-height:1.6; font-feature-settings:"tnum"}
+.num{font-variant-numeric:tabular-nums}
+.mono{font-family:var(--mono); font-size:.9em}
+button{font:inherit; cursor:pointer; border:0; background:none; color:inherit; text-align:left}
+button:focus-visible,input:focus-visible{outline:2px solid var(--green); outline-offset:2px}
+.hidden{display:none!important}
+svg.i{width:17px; height:17px; stroke:currentColor; fill:none; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; flex:0 0 auto; vertical-align:-3px}
+
+.app{display:grid; grid-template-columns:238px 1fr 318px; height:100vh; min-height:700px}
+.mtop{display:none}
+.bnav{display:none}
+
+/* ── 左欄 ── */
+.rail-l{background:var(--surface); border-right:1px solid var(--line); display:flex; flex-direction:column; padding:18px 14px; overflow-y:auto}
+.ws{display:flex; align-items:center; gap:10px; padding:10px 12px; border:1px solid var(--line); border-radius:12px; margin-bottom:20px}
+.ws .logo{width:30px; height:30px; border-radius:9px; background:linear-gradient(135deg,var(--green),var(--leaf) 130%); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:800; font-size:13px}
+.ws .t{font-size:13px; font-weight:700; line-height:1.3}
+.ws .s{font-size:11px; color:var(--ink-3)}
+.nav-label{font-size:10px; letter-spacing:.14em; font-weight:800; color:var(--ink-3); text-transform:uppercase; margin:14px 12px 6px}
+.nv{display:flex; align-items:center; gap:11px; width:100%; padding:9px 12px; border-radius:10px; font-size:13.5px; color:var(--ink-2); transition:background .13s}
+.nv:hover{background:var(--paper)}
+.nv.on{background:var(--leaf-soft); color:var(--green-deep); font-weight:700}
+.nv .pill{margin-left:auto; font-size:10.5px; font-weight:800; background:var(--red); color:#fff; border-radius:999px; padding:1px 7px}
+.nv .pill.g{background:var(--line); color:var(--ink-2)}
+.radar-card{margin-top:auto; background:linear-gradient(150deg,var(--green-deep),var(--green) 95%); border-radius:16px; padding:15px; color:#EAF6EE}
+.radar-card .rt{font-size:12.5px; font-weight:700; display:flex; align-items:center; gap:7px}
+.radar-card .rd{font-size:11.5px; color:#B9DCC6; margin:5px 0 11px; line-height:1.55}
+.radar-card .rb{display:inline-block; background:#fff; color:var(--green-deep); font-size:12px; font-weight:700; border-radius:9px; padding:6px 14px}
+.pulse{width:7px; height:7px; border-radius:50%; background:var(--leaf); animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(94,207,139,.5)}55%{box-shadow:0 0 0 6px rgba(94,207,139,0)}}
+@media (prefers-reduced-motion:reduce){.pulse{animation:none}}
+
+/* ── 主區 ── */
+.main{overflow-y:auto; padding:22px 26px 48px}
+.tophead{display:flex; align-items:flex-start; gap:16px; margin-bottom:18px; flex-wrap:wrap}
+.tophead .date{font-size:11.5px; color:var(--ink-3)}
+.tophead h1{font-size:20px; margin:2px 0 0; font-weight:750; letter-spacing:-.01em}
+.search{margin-left:auto; display:flex; align-items:center; gap:8px; background:var(--surface); border:1px solid var(--line);
+  border-radius:11px; padding:6px 13px; min-width:230px}
+.search input{border:0; background:none; font:inherit; font-size:12.5px; flex:1; color:var(--ink)}
+.search input::placeholder{color:var(--ink-3)}
+.qa{display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap}
+.qa button{display:flex; align-items:center; gap:8px; background:var(--surface); border:1px solid var(--line);
+  border-radius:11px; padding:8px 15px; font-size:12.5px; font-weight:600; color:var(--ink-2);
+  box-shadow:var(--shadow); transition:transform .13s,border-color .13s}
+.qa button:hover{transform:translateY(-1px); border-color:var(--green)}
+.qa button.dark{background:var(--ink); border-color:var(--ink); color:#fff}
+
+.view{animation:fade .2s ease}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.view{animation:none}}
+.vh{display:flex; align-items:baseline; gap:12px; margin-bottom:14px}
+.vh h2{font-size:16px; margin:0; font-weight:750}
+.vh .hint{font-size:12px; color:var(--ink-3)}
+.back{font-size:12px; color:var(--green); font-weight:700; margin-bottom:10px; display:inline-flex; gap:5px; align-items:center}
+
+.hero{display:grid; grid-template-columns:1.6fr 1fr; gap:14px; margin-bottom:14px}
+@media (max-width:1000px){.hero{grid-template-columns:1fr}}
+.ov{background:var(--surface); border:1px solid var(--line); border-radius:var(--r); padding:20px 24px; box-shadow:var(--shadow)}
+.lbl{font-size:10.5px; letter-spacing:.12em; font-weight:800; color:var(--ink-3); text-transform:uppercase}
+.bignum{font-size:36px; font-weight:760; letter-spacing:-.02em; line-height:1.25; margin:2px 0}
+.bignum small{font-size:19px; color:var(--ink-3); font-weight:600}
+.delta{display:inline-flex; gap:5px; font-size:12px; font-weight:700; margin-left:12px}
+.delta.up{color:var(--green)}
+.ai-line{margin-top:12px; padding-top:12px; border-top:1px dashed var(--line); font-size:12.5px; color:var(--ink-2); display:flex; gap:8px}
+.ai-line .spark{color:var(--green); font-weight:800}
+.ai-line a{color:var(--blue); text-decoration:none; font-weight:600; cursor:pointer}
+.chart{display:flex; align-items:flex-end; gap:14px; height:104px; margin-top:14px; padding:0 4px}
+.cbar{flex:1; display:flex; flex-direction:column; align-items:center; gap:6px; cursor:pointer}
+.cbar .stack{width:100%; max-width:44px; display:flex; flex-direction:column-reverse; gap:2px; height:78px}
+.cbar .seg{display:block; border-radius:5px; width:100%; height:0; transition:height .7s cubic-bezier(.2,.7,.3,1)}
+.cbar .seg.a{background:var(--leaf)} .cbar .seg.b{background:var(--green)}
+.cbar .cl{font-size:10.5px; color:var(--ink-3); white-space:nowrap}
+.cbar:hover .cl,.cbar.cur .cl{color:var(--green-deep); font-weight:800}
+.legend{display:flex; gap:16px; font-size:11px; color:var(--ink-3); margin-top:8px}
+.dot{display:inline-block; width:8px; height:8px; border-radius:3px; margin-right:5px}
+.dot.a{background:var(--leaf)} .dot.b{background:var(--green)}
+
+.score{background:linear-gradient(150deg,var(--green-deep),var(--green) 90%); border-radius:var(--r); padding:20px 24px; color:#EAF6EE; box-shadow:var(--shadow); cursor:pointer; transition:transform .15s}
+.score:hover{transform:translateY(-2px)}
+.score .lbl{color:#9CCBAF}
+.score .sv{font-size:36px; font-weight:760; margin:2px 0; letter-spacing:-.02em}
+.score .sv small{font-size:15px; color:#9CCBAF; font-weight:600}
+.score .st{font-size:12.5px; color:#C8E5D2; margin-bottom:12px}
+.sbar{height:8px; border-radius:5px; background:rgba(255,255,255,.18); overflow:hidden; margin-bottom:12px}
+.sbar i{display:block; height:100%; width:0; border-radius:5px; background:var(--leaf); transition:width .9s cubic-bezier(.2,.7,.3,1)}
+.score ul{margin:0; padding:0; list-style:none; font-size:12px}
+.score li{display:flex; justify-content:space-between; padding:4.5px 0; border-bottom:1px dashed rgba(255,255,255,.14)}
+.score li:last-child{border-bottom:0}
+.score li b{color:#fff}
+
+.duo{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px}
+@media (max-width:1000px){.duo{grid-template-columns:1fr}}
+.mcard{background:var(--surface); border:1px solid var(--line); border-radius:var(--r); padding:18px 22px; box-shadow:var(--shadow); cursor:pointer; transition:transform .13s, box-shadow .13s}
+.mcard:hover{transform:translateY(-2px); box-shadow:var(--shadow-up)}
+.mv{font-size:26px; font-weight:750; margin:3px 0 10px}
+.hbar{display:flex; height:13px; border-radius:8px; overflow:hidden; gap:2px; margin-bottom:9px}
+.hbar i{height:100%}
+.ml{font-size:12px; color:var(--ink-2)}
+.ml b{color:var(--ink)}
+
+.tbl-card{background:var(--surface); border:1px solid var(--line); border-radius:var(--r); box-shadow:var(--shadow); overflow:hidden}
+.tbl-head{display:flex; align-items:center; gap:10px; padding:15px 22px 0; flex-wrap:wrap}
+.tbl-head h2{font-size:14.5px; margin:0; font-weight:750}
+.tabs{margin-left:auto; display:flex; gap:4px; background:var(--paper); border-radius:10px; padding:3px}
+.tabs button{font-size:12px; padding:5px 13px; border-radius:8px; color:var(--ink-3); font-weight:600}
+.tabs button.on{background:var(--surface); color:var(--ink); box-shadow:var(--shadow); font-weight:700}
+.twrap{overflow-x:auto}
+table{border-collapse:collapse; width:100%; min-width:680px; font-size:13px; margin-top:8px}
+th{font-size:10px; letter-spacing:.09em; color:var(--ink-3); font-weight:800; text-align:left; text-transform:uppercase; padding:9px 22px; border-bottom:1px solid var(--line)}
+td{padding:11px 22px; border-bottom:1px solid var(--line); vertical-align:middle}
+tr:last-child td{border-bottom:0}
+tbody tr{cursor:pointer; transition:background .12s}
+tbody tr:hover{background:#FAFCF9}
+.co{font-weight:650}
+.sub{font-size:11px; color:var(--ink-3); margin-top:1px}
+.pill{display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:700; border-radius:999px; padding:2.5px 11px; white-space:nowrap}
+.pill.sig{background:var(--blue-wash); color:var(--blue)}
+.pill.ok{background:var(--leaf-soft); color:var(--green-deep)}
+.pill.warn{background:var(--amber-wash); color:var(--amber)}
+.pill.bad{background:var(--red-wash); color:var(--red)}
+.pill.ghost{background:var(--ink); color:#fff}
+.pill .d{width:6px; height:6px; border-radius:50%}
+.pill.ok .d{background:var(--green)}.pill.sig .d{background:var(--blue)}.pill.warn .d{background:var(--amber)}.pill.bad .d{background:var(--red)}
+.foot{font-size:11px; color:var(--ink-3); margin-top:18px}
+
+/* 右欄 */
+.rail-r{background:var(--surface); border-left:1px solid var(--line); overflow-y:auto; padding:22px 20px 40px}
+.rc{margin-bottom:22px}
+.rc h3{display:flex; align-items:baseline; gap:8px; font-size:13px; margin:0 0 11px; font-weight:750}
+.rc h3 .more{margin-left:auto; font-size:11px; color:var(--green); font-weight:700; cursor:pointer}
+.clock{display:flex; align-items:center; gap:12px; padding:11px 13px; border:1px solid var(--line); border-radius:13px; margin-bottom:8px; transition:border-color .13s,transform .13s; cursor:pointer; width:100%}
+.clock:hover{border-color:var(--green); transform:translateX(2px)}
+.clock .ci{width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; flex:0 0 auto}
+.clock.c1 .ci{background:var(--blue-wash); color:var(--blue)}
+.clock.c2 .ci{background:var(--leaf-soft); color:var(--green)}
+.clock.c3 .ci{background:var(--amber-wash); color:var(--amber)}
+.clock.c4 .ci{background:var(--paper); color:var(--ink-2)}
+.clock .ct{font-size:12.5px; font-weight:700; line-height:1.35}
+.clock .cs{font-size:11px; color:var(--ink-3)}
+.clock .cv{margin-left:auto; text-align:right; font-size:12px; font-weight:750}
+.clock .cv .hot{color:var(--red)}
+.donut-row{display:flex; align-items:center; gap:18px; position:relative}
+.donut{width:100px; height:100px; border-radius:50%; flex:0 0 auto; position:relative;
+  background:conic-gradient(var(--green) 0 299deg, var(--amber) 299deg 319deg, var(--ink) 319deg 333deg, var(--line-2) 333deg 360deg);
+  display:flex; align-items:center; justify-content:center; cursor:pointer}
+.donut::after{content:""; position:absolute; width:64px; height:64px; border-radius:50%; background:var(--surface)}
+.donut .dc{position:relative; z-index:1; text-align:center; font-size:10px; color:var(--ink-3); line-height:1.3}
+.donut .dc b{display:block; font-size:18px; color:var(--ink); font-weight:800}
+.dlg{font-size:11.5px; color:var(--ink-2); flex:1}
+.dlg button{display:flex; align-items:center; gap:7px; padding:3px 0; width:100%; border-radius:6px}
+.dlg button:hover{color:var(--green-deep); font-weight:700}
+.dlg .num{margin-left:auto; font-weight:700}
+.q{padding:10px 0; border-bottom:1px dashed var(--line); font-size:12px}
+.q:last-child{border-bottom:0}
+.owner{font-size:9.5px; font-weight:800; border-radius:5px; padding:1.5px 7px; letter-spacing:.05em; margin-right:7px}
+.owner.client{background:#E4F2F6; color:#14586B}
+.owner.expert{background:#EFECFA; color:#54419B}
+.owner.us{background:var(--leaf-soft); color:var(--green-deep)}
+.owner.you{background:var(--amber-wash); color:var(--amber)}
+.q .qa-btn{float:right; color:var(--green); font-weight:700; font-size:11.5px}
+.assist{background:var(--paper); border:1px solid var(--line); border-radius:14px; padding:13px 15px}
+.assist .at{font-size:12px; font-weight:750; margin-bottom:9px; display:flex; gap:6px; align-items:center; color:var(--green-deep)}
+.assist .chip{display:inline-block; font-size:11px; background:var(--surface); border:1px solid var(--line); border-radius:999px; padding:3px 11px; margin:0 5px 6px 0; color:var(--ink-2); cursor:pointer}
+.assist .chip:hover{border-color:var(--green); color:var(--green-deep)}
+.assist .ans{font-size:11.5px; background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:8px 11px; margin:6px 0; color:var(--ink-2); line-height:1.6}
+.assist .in{display:flex; gap:8px; margin-top:6px}
+.assist input{flex:1; border:1px solid var(--line); border-radius:9px; padding:7px 12px; font:inherit; font-size:12px; background:var(--surface)}
+.assist .send{background:var(--green); color:#fff; border-radius:9px; padding:0 14px; font-size:12px; font-weight:700}
+
+/* modal */
+.modal-bg{position:fixed; inset:0; background:rgba(14,31,23,.45); display:flex; align-items:center; justify-content:center; z-index:50; padding:20px}
+.modal{background:var(--surface); border-radius:18px; max-width:560px; width:100%; max-height:82vh; overflow-y:auto; padding:26px 30px; box-shadow:var(--shadow-up)}
+.modal h3{margin:0 0 4px; font-size:16px}
+.modal .ms{font-size:12px; color:var(--ink-3); margin-bottom:14px}
+.modal .body{font-size:13px; color:var(--ink-2); line-height:1.8; background:var(--paper); border-radius:12px; padding:16px 18px; white-space:pre-line}
+.modal .row{display:flex; gap:8px; margin-top:16px; justify-content:flex-end}
+.modal .btn{border:1px solid var(--line-2); border-radius:9px; padding:7px 16px; font-size:12.5px; font-weight:600}
+.modal .btn.p{background:var(--green); border-color:var(--green); color:#fff}
+#toast{position:fixed; bottom:22px; left:50%; transform:translateX(-50%) translateY(8px); background:var(--ink); color:#fff;
+  border-radius:999px; padding:10px 22px; font-size:12.5px; opacity:0; pointer-events:none; transition:all .25s; box-shadow:var(--shadow-up); max-width:80vw; text-align:center; z-index:60}
+#toast.show{opacity:1; transform:translateX(-50%)}
+
+/* ══ 響應式 ══ */
+/* 平板：右欄降到主內容下方（不再直接消失） */
+@media (max-width:1180px){
+  .app{grid-template-columns:238px 1fr; grid-template-rows:1fr; height:100vh}
+  .rail-r{display:none}
+  .main .rr-inline{display:block}
+}
+/* 手機：側欄→頂條＋底部導航；整頁改為單欄、body 捲動 */
+@media (max-width:840px){
+  .app{display:block; height:auto; min-height:0}
+  .rail-l,.rail-r{display:none}
+  .mtop{position:sticky; top:0; z-index:40; display:flex; align-items:center; gap:10px;
+    background:var(--surface); border-bottom:1px solid var(--line); padding:10px 16px}
+  .mtop .logo{width:28px; height:28px; border-radius:8px; background:linear-gradient(135deg,var(--green),var(--leaf) 130%);
+    display:flex; align-items:center; justify-content:center; color:#fff; font-weight:800; font-size:12px}
+  .mtop .t{font-size:13px; font-weight:750}
+  .mtop .s{font-size:10.5px; color:var(--ink-3)}
+  .mtop .live{margin-left:auto; display:flex; align-items:center; gap:6px; font-size:10.5px; color:var(--green-deep); font-weight:700}
+  .main{padding:16px 14px calc(84px + env(safe-area-inset-bottom))}
+  .tophead h1{font-size:15.5px; line-height:1.5}
+  .search{min-width:0; width:100%; order:3; flex:1 1 100%}
+  .qa{flex-wrap:nowrap; overflow-x:auto; padding-bottom:4px; -webkit-overflow-scrolling:touch}
+  .qa button{white-space:nowrap; flex:0 0 auto}
+  .bignum{font-size:28px}
+  .bignum small{font-size:15px}
+  .delta{display:block; margin:2px 0 0}
+  .score .sv{font-size:28px}
+  .mv{font-size:22px}
+  .modal{padding:20px 18px; border-radius:16px}
+  .bnav{position:fixed; bottom:0; left:0; right:0; z-index:45; display:flex;
+    background:var(--surface); border-top:1px solid var(--line);
+    padding:6px 4px calc(6px + env(safe-area-inset-bottom));
+    overflow-x:auto; -webkit-overflow-scrolling:touch; box-shadow:0 -4px 16px rgba(14,31,23,.07)}
+  .bnav button{flex:1 0 62px; display:flex; flex-direction:column; align-items:center; gap:3px;
+    padding:5px 2px; border-radius:10px; font-size:10px; color:var(--ink-3); font-weight:600; text-align:center}
+  .bnav button.on{color:var(--green-deep); background:var(--leaf-soft); font-weight:800}
+  .bnav svg.i{width:19px; height:19px}
+}
+/* 平板/手機共用：右欄內容以行內區塊呈現在主內容尾端 */
+.rr-inline{display:none}
+@media (max-width:840px){.main .rr-inline{display:block}}
+</style>
+
+<div class="app">
+  <div class="mtop">
+    <div class="logo">GS</div>
+    <div><div class="t">Green Sigra</div><div class="s">水美 · 德國線</div></div>
+    <div class="live"><span class="pulse"></span>雷達運作中</div>
+  </div>
+  <nav class="rail-l">
+    <div class="ws"><div class="logo">GS</div><div><div class="t">Green Sigra</div><div class="s">水美 Water Beauty · 德國線</div></div></div>
+    <div class="nav-label">主選單</div>
+    <button class="nv on" data-view="dash"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>總覽</button>
+    <button class="nv" data-view="list"><svg class="i" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/></svg>開發名單<span class="pill g num">53</span></button>
+    <button class="nv" data-view="signals"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8a6 6 0 0 1 0 8.4M7.8 16.2a6 6 0 0 1 0-8.4"/><path d="M19.1 4.9a10 10 0 0 1 0 14.2M4.9 19.1a10 10 0 0 1 0-14.2"/></svg>訊號雷達<span class="pill num">16</span></button>
+    <button class="nv" data-view="materials"><svg class="i" viewBox="0 0 24 24"><path d="M4 4h16a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/><path d="M3 6l9 7 9-7"/></svg>素材工作台</button>
+    <button class="nv" data-view="results"><svg class="i" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>成果回報</button>
+    <div class="nav-label">資料底座</div>
+    <button class="nv" data-view="clocks"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>四個時鐘</button>
+    <button class="nv" data-view="sources"><svg class="i" viewBox="0 0 24 24"><path d="M12 3l9 4.5-9 4.5-9-4.5L12 3z"/><path d="M3 12.5l9 4.5 9-4.5"/><path d="M3 17l9 4.5 9-4.5"/></svg>產業來源包</button>
+    <div class="radar-card">
+      <div class="rt"><span class="pulse"></span>雷達運作中</div>
+      <div class="rd">正在盯：荷蘭補助頁、德國 53 家的商業登記異動、SBTi 名單更新</div>
+      <button class="rb" data-view="signals">查看訊號流</button>
+    </div>
+  </nav>
+
+  <main class="main">
+    <div class="tophead">
+      <div>
+        <div class="date num">2026 年 7 月 6 日 · 星期一</div>
+        <h1 id="greet">早安，Kirsten——荷蘭補助剩 24 天，第一批素材還沒放行</h1>
+      </div>
+      <div class="search"><svg class="i" viewBox="0 0 24 24" style="color:var(--ink-3)"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><input id="gsearch" placeholder="搜尋公司名…（試打 Steyer）" aria-label="搜尋"></div>
+    </div>
+
+    <div class="qa">
+      <button class="dark" onclick="openLetter('shuimei')"><svg class="i" viewBox="0 0 24 24"><path d="M4 4h16a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/><path d="M3 6l9 7 9-7"/></svg>產出提問信</button>
+      <button onclick="toast('名片匯入精靈：上傳照片或 Excel → 自動比對重複（原型示意）')"><svg class="i" viewBox="0 0 24 24"><path d="M12 16V4M6 10l6-6 6 6"/><path d="M4 20h16"/></svg>匯入展會名片</button>
+      <button onclick="scanSignals(this)"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8a6 6 0 0 1 0 8.4M7.8 16.2a6 6 0 0 1 0-8.4"/></svg>手動掃一輪訊號</button>
+      <button onclick="toast('已匯出 名單_德國_2026-07-06.xlsx（原型示意）')"><svg class="i" viewBox="0 0 24 24"><path d="M12 4v12M6 10l6 6 6-6"/><path d="M4 20h16"/></svg>下載名單</button>
+    </div>
+
+    <!-- ═ 總覽 ═ -->
+    <section class="view" id="v-dash">
+      <div class="hero">
+        <div class="ov">
+          <span class="lbl">時機訊號 · 近兩年 16 個（經營層 11 ＋ 股權結構 5）</span>
+          <div class="bignum num"><span data-count="16">0</span><small> 個</small><span class="delta up num">↗ 2026 上半年 5 個，較上期 +1</span></div>
+          <div class="chart" aria-label="每半年新增訊號數" id="sigchart">
+            <button class="cbar" data-n="2"><span class="stack"><span class="seg a" data-h="20"></span><span class="seg b" data-h="10"></span></span><span class="cl">2024 H2 · 2</span></button>
+            <button class="cbar" data-n="5"><span class="stack"><span class="seg a" data-h="60"></span><span class="seg b" data-h="15"></span></span><span class="cl">2025 H1 · 5</span></button>
+            <button class="cbar" data-n="4"><span class="stack"><span class="seg a" data-h="30"></span><span class="seg b" data-h="30"></span></span><span class="cl">2025 H2 · 4</span></button>
+            <button class="cbar cur" data-n="5"><span class="stack"><span class="seg a" data-h="55"></span><span class="seg b" data-h="20"></span></span><span class="cl">2026 H1 · 5</span></button>
+          </div>
+          <div class="legend"><span><span class="dot a"></span>經營層異動 11</span><span><span class="dot b"></span>股權／結構 5</span></div>
+          <div class="ai-line"><span class="spark">✦</span><span>本季最強一筆：<b>Steyer 世代交棒完成（2026-02）</b>——新任經營者上任半年內是重看設備的高峰。<a onclick="show('signals')">看 16 筆訊號 →</a></span></div>
+        </div>
+        <div class="score" onclick="show('materials')" role="button" tabindex="0">
+          <span class="lbl">出擊就緒度（四項各占 25%）</span>
+          <div class="sv num"><span data-count="33">0</span><small> %</small></div>
+          <div class="st">名單好了；素材、官網、問題三項未完——先別寄</div>
+          <div class="sbar"><i data-w="33"></i></div>
+          <ul>
+            <li><span>① 名單查證 53 家</span><b>✓ 25%</b></li>
+            <li><span>② 素材過質疑關 0/3 包</span><b class="num">0%</b></li>
+            <li><span>③ 官網補強 1/3 項</span><b class="num">8%</b></li>
+            <li><span>④ 問題答完 0/4 題</span><b class="num">0%</b></li>
+          </ul>
+        </div>
+      </div>
+      <div class="duo">
+        <div class="mcard" onclick="show('list','first')" role="button" tabindex="0">
+          <span class="lbl">進來的機會 · 第一批建議</span>
+          <div class="mv num">10 家</div>
+          <div class="hbar"><i style="background:var(--blue); flex:5"></i><i style="background:var(--green); flex:2"></i><i style="background:var(--leaf); flex:3"></i></div>
+          <div class="ml"><b>5 家換老闆訊號戶</b>＋2 家集團（Elis、CWS）＋3 家柏林穩健組——實體信路線，郵資約 <b class="num">€25</b></div>
+        </div>
+        <div class="mcard" onclick="show('list','risk')" role="button" tabindex="0">
+          <span class="lbl">擋掉的風險 · 不寄／待確認</span>
+          <div class="mv num">7 家</div>
+          <div class="hbar"><i style="background:var(--ink); flex:2"></i><i style="background:var(--red); flex:3"></i><i style="background:var(--amber); flex:2"></i></div>
+          <div class="ml"><b>2 家幽靈</b>（Initial 已併購、Haake 已註銷）＋3 家存疑＋2 個錯地址——每一封都是省下的白工</div>
+        </div>
+      </div>
+      <div class="tbl-card">
+        <div class="tbl-head"><h2>第一批 · 建議本週備信</h2><div class="tabs" id="dashTabs">
+          <button class="on" data-f="sig5">訊號戶 5</button><button data-f="group">集團 2</button><button data-f="berlin">柏林 3</button>
+        </div></div>
+        <div class="twrap"><table><thead><tr><th>公司</th><th>為什麼是現在</th><th>登記編號</th><th>信的開場</th><th>狀態</th></tr></thead><tbody id="dashRows"></tbody></table></div>
+      </div>
+      <p class="foot">原型 v2 · 名單、訊號、登記編號皆為 2026-07-06 查證的真實資料 · Green Sigra by Yoshi Design Lab</p>
+    </section>
+
+    <!-- ═ 名單 ═ -->
+    <section class="view hidden" id="v-list">
+      <button class="back" onclick="show('dash')">← 回總覽</button>
+      <div class="vh"><h2>開發名單 · 德國 53 家</h2><span class="hint" id="listHint">已查證 53／53</span></div>
+      <div class="tbl-card">
+        <div class="tbl-head"><h2 id="listTitle">全部</h2><div class="tabs" id="listTabs">
+          <button class="on" data-f="all">全部 20*</button><button data-f="first">第一批 10</button><button data-f="sig">有訊號 16</button><button data-f="risk">剔除/存疑 5</button>
+        </div></div>
+        <div class="twrap"><table><thead><tr><th>公司</th><th>健檢</th><th>時機訊號</th><th>登記編號</th><th>狀態</th></tr></thead><tbody id="listRows"></tbody></table></div>
+      </div>
+      <p class="foot">* 原型載入 20 家代表（真實資料）；其餘 33 家在完整版分頁。點任一列看該公司的證據。</p>
+    </section>
+
+    <!-- ═ 訊號 ═ -->
+    <section class="view hidden" id="v-signals">
+      <button class="back" onclick="show('dash')">← 回總覽</button>
+      <div class="vh"><h2>訊號雷達 · 16 筆（近兩年）</h2><span class="hint">全部來自法院商業登記，非新聞猜測</span></div>
+      <div class="tbl-card"><div class="twrap"><table><thead><tr><th>日期</th><th>公司</th><th>訊號</th><th>類型</th><th>建議動作</th></tr></thead><tbody id="sigRows"></tbody></table></div></div>
+    </section>
+
+    <!-- ═ 素材 ═ -->
+    <section class="view hidden" id="v-materials">
+      <button class="back" onclick="show('dash')">← 回總覽</button>
+      <div class="vh"><h2>素材工作台 · 0/3 包放行</h2><span class="hint">每包要過：AI 模擬質疑 ＋ 官網自查，兩關全過才放行</span></div>
+      <div class="duo">
+        <div class="mcard" style="cursor:default"><span class="lbl">訊號戶包 · 5 家</span><div class="mv" style="font-size:15px">恭賀新任＋省能源開場</div><div class="ml"><span class="pill warn"><span class="d"></span>草稿中</span>　質疑關未跑 · 官網關 1/3</div></div>
+        <div class="mcard" style="cursor:default"><span class="lbl">Elis / CWS 包</span><div class="mv" style="font-size:15px">ESG 數字開場（幫你交承諾的作業）</div><div class="ml"><span class="pill warn"><span class="d"></span>草稿中</span>　等 SBTi 引用句定稿</div></div>
+        <div class="mcard" style="cursor:default"><span class="lbl">柏林穩健組包 · 3 家</span><div class="mv" style="font-size:15px">禮物型開場（產業能源分析）</div><div class="ml"><span class="pill warn"><span class="d"></span>草稿中</span>　附件分析報告製作中</div></div>
+        <div class="mcard" style="cursor:default"><span class="lbl">官網補強（擋住所有包）</span><div class="mv" style="font-size:15px">1 / 3 項完成</div><div class="ml">✓ 專利可查驗　✗ 英文認證頁　✗ AI 同名混淆——<b>這 2 項不補，寄了也白寄</b></div></div>
+      </div>
+    </section>
+
+    <!-- ═ 成果 ═ -->
+    <section class="view hidden" id="v-results">
+      <button class="back" onclick="show('dash')">← 回總覽</button>
+      <div class="vh"><h2>成果回報</h2><span class="hint">第一批未寄出——這頁在等它的資料</span></div>
+      <div class="ov"><span class="lbl">本輪要驗證的假設</span>
+        <div style="font-size:15px; font-weight:700; margin:6px 0">「換老闆訊號戶」的回覆率，高於一般名單嗎？</div>
+        <div class="ml" style="font-size:12.5px">寄出後回來記錄每家的回應。訊號戶 5 家是假設組、柏林穩健組 3 家是對照組——<b>「勝率」這個詞從承諾變成數據的地方。</b></div></div>
+    </section>
+
+    <!-- ═ 時鐘 ═ -->
+    <section class="view hidden" id="v-clocks">
+      <button class="back" onclick="show('dash')">← 回總覽</button>
+      <div class="vh"><h2>四個時鐘 · 資料庫 v0</h2><span class="hint">9 列已查證＋2 列待覆核（完整檔：IDDI_時鐘資料庫_v0.xlsx）</span></div>
+      <div class="tbl-card"><div class="twrap"><table><thead><tr><th>時鐘</th><th>項目</th><th>關鍵日期</th><th>到期觸發什麼</th><th>來源</th></tr></thead><tbody>
+        <tr onclick="toast('EUR-Lex 原文連結（原型示意）')"><td><span class="pill sig"><span class="d"></span>法規</span></td><td>歐盟廢水指令 UWWTD</td><td class="num">2027-07-31 各國立法</td><td>喚醒對應國名單；製藥/化妝品新客群線</td><td class="sub">EUR-Lex ✓</td></tr>
+        <tr onclick="toast('EUR-Lex 原文連結（原型示意）')"><td><span class="pill sig"><span class="d"></span>法規</span></td><td>洗劑法規 2026/405</td><td class="num">2029-09-23 適用</td><td>零化學方案的長期助攻，放信結尾</td><td class="sub">EUR-Lex ✓</td></tr>
+        <tr onclick="toast('RVO 公告連結（原型示意）')"><td><span class="pill ok"><span class="d"></span>補助</span></td><td>荷蘭 DEI+ 截止</td><td class="num" style="color:var(--red); font-weight:700">2026-07-30（剩 24 天）</td><td>荷蘭名單接觸時點全部提前</td><td class="sub">RVO ✓</td></tr>
+        <tr onclick="toast('RVO 公告連結（原型示意）')"><td><span class="pill ok"><span class="d"></span>補助</span></td><td>荷蘭 SDE++ 大輪 €80億</td><td class="num">2026-09-22 開放</td><td>趕不上 DEI+ 的客戶轉推這輪</td><td class="sub">RVO ✓</td></tr>
+        <tr onclick="toast('官方來源連結（原型示意）')"><td><span class="pill ok"><span class="d"></span>補助</span></td><td>德國電價補貼到期</td><td class="num">2028 年底</td><td>「補貼結束怎麼辦」＝德國開場白</td><td class="sub">官方 ✓</td></tr>
+        <tr onclick="toast('SBTi 官方連結（原型示意）')"><td><span class="pill warn"><span class="d"></span>供應鏈</span></td><td>SBTi 淨零標準 2.0</td><td class="num">2026-06-11 已生效</td><td>已承諾集團的供應商查核變硬</td><td class="sub">SBTi ✓</td></tr>
+        <tr onclick="show('signals')"><td><span class="pill bad"><span class="d"></span>商業</span></td><td>登記異動監視（53 家）</td><td class="num">持續</td><td>16 筆訊號 → 看訊號雷達</td><td class="sub">商業登記 ✓</td></tr>
+      </table></div></div>
+    </section>
+
+    <!-- ═ 來源包 ═ -->
+    <section class="view hidden" id="v-sources">
+      <button class="back" onclick="show('dash')">← 回總覽</button>
+      <div class="vh"><h2>產業來源包 · 洗衣業（第 1 包）</h2><span class="hint">接新產業時 AI 提案四件套，確認後掛進雷達——包是資產，跨客戶複用</span></div>
+      <div class="duo">
+        <div class="mcard" style="cursor:default"><span class="lbl">協會名錄</span><div class="mv" style="font-size:15px">intex · DBL · Sitex · DTV</div><div class="ml">✓ 已抓取 60 列 → 查證 53 實體</div></div>
+        <div class="mcard" style="cursor:default"><span class="lbl">認證體系</span><div class="mv" style="font-size:15px">RAL-GZ 992（德）· CERTEX（荷）</div><div class="ml">認證名錄＝封閉名單；醫療線等 EN 14065 答案</div></div>
+        <div class="mcard" style="cursor:default"><span class="lbl">主場展會</span><div class="mv" style="font-size:15px">Texcare International（法蘭克福）</div><div class="ml">⚠ 下屆 2028——近期改走協會年會＋實體信</div></div>
+        <div class="mcard" style="cursor:default"><span class="lbl">徵信／登記</span><div class="mv" style="font-size:15px">North Data（批掃）· 官方登記（人工深挖）</div><div class="ml">機器可達性已標注：官方站擋自動化，批量走 North Data</div></div>
+      </div>
+    </section>
+
+    <!-- 手機版：右欄內容行內呈現 -->
+    <div class="rr-inline">
+      <div class="rc" style="margin-top:26px">
+        <h3>四個時鐘 <span class="more" onclick="show('clocks')">全部 →</span></h3>
+        <button class="clock c2" onclick="show('clocks')"><span class="ci"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></span><span><span class="ct">補助</span><br><span class="cs">荷蘭 DEI+ 截止</span></span><span class="cv num"><span class="hot">⏳ 24 天</span><br><span class="cs">07-30</span></span></button>
+        <button class="clock c3" onclick="show('clocks')"><span class="ci"><svg class="i" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></span><span><span class="ct">供應鏈</span><br><span class="cs">SBTi 2.0 查核變硬</span></span><span class="cv num">2026-06<br><span class="cs">已生效</span></span></button>
+        <button class="clock c4" onclick="show('signals')"><span class="ci"><svg class="i" viewBox="0 0 24 24"><path d="M3 21V8l7-5 7 5v13"/><path d="M3 21h18M9 21v-6h4v6"/></svg></span><span><span class="ct">商業</span><br><span class="cs">登記異動監視 53 家</span></span><span class="cv num">16 筆<br><span class="cs">近兩年</span></span></button>
+      </div>
+      <div class="rc">
+        <h3>等答案 <span class="more num">4 題</span></h3>
+        <div class="q"><span class="owner client">問水美</span>歐洲消毒驗證（EN 14065）有沒有？<button class="qa-btn" onclick="openLetter('shuimei')">產出 →</button></div>
+        <div class="q"><span class="owner expert">問專家</span>德國 B2B 冷信的法律界線？<button class="qa-btn" onclick="openLetter('lawyer')">產出 →</button></div>
+        <div class="q"><span class="owner us">我們查</span>BAFA 能效補助額度與資格<button class="qa-btn" onclick="toast('已排入查證佇列（原型示意）')">排入 →</button></div>
+        <div class="q"><span class="owner you">您拍板</span>Böge 存疑——確認再寄或剔除？<button class="qa-btn" onclick="decideBoge(this)">決定 →</button></div>
+      </div>
+      <div class="rc">
+        <div class="assist">
+          <div class="at"><svg class="i" viewBox="0 0 24 24"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3z"/></svg>問 Green Sigra</div>
+          <span class="chip" onclick="ask(this,'steyer')">為什麼 Steyer 排第一？</span>
+          <span class="chip" onclick="ask(this,'deadline')">哪個期限最急？</span>
+          <div class="ans-box"></div>
+          <div class="in"><input class="askin" placeholder="問名單上的任何一家…" aria-label="提問"><button class="send" onclick="askFree(this)">問</button></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <aside class="rail-r">
+    <div class="rc">
+      <h3>四個時鐘 <span class="more" onclick="show('clocks')">全部 →</span></h3>
+      <button class="clock c2" onclick="show('clocks')"><span class="ci"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></span><span><span class="ct">補助</span><br><span class="cs">荷蘭 DEI+ 截止</span></span><span class="cv num"><span class="hot">⏳ 24 天</span><br><span class="cs">07-30</span></span></button>
+      <button class="clock c3" onclick="show('clocks')"><span class="ci"><svg class="i" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></span><span><span class="ct">供應鏈</span><br><span class="cs">SBTi 2.0 查核變硬</span></span><span class="cv num">2026-06<br><span class="cs">已生效</span></span></button>
+      <button class="clock c1" onclick="show('clocks')"><span class="ci"><svg class="i" viewBox="0 0 24 24"><path d="M12 3v18M5 8l7-5 7 5M5 8v0a3.5 3.5 0 0 0 7 0 3.5 3.5 0 0 0 7 0"/></svg></span><span><span class="ct">法規</span><br><span class="cs">洗劑新規 2026/405</span></span><span class="cv num">2029<br><span class="cs">適用</span></span></button>
+      <button class="clock c4" onclick="show('signals')"><span class="ci"><svg class="i" viewBox="0 0 24 24"><path d="M3 21V8l7-5 7 5v13"/><path d="M3 21h18M9 21v-6h4v6"/></svg></span><span><span class="ct">商業</span><br><span class="cs">登記異動監視 53 家</span></span><span class="cv num">16 筆<br><span class="cs">近兩年</span></span></button>
+    </div>
+    <div class="rc">
+      <h3>名單體質 <span class="more" onclick="show('list','all')">53 家 →</span></h3>
+      <div class="donut-row">
+        <button class="donut" onclick="show('list','all')" aria-label="名單體質圓環"><span class="dc"><b class="num">83%</b>可用</span></button>
+        <div class="dlg">
+          <button onclick="show('list','all')"><span class="dot" style="background:var(--green)"></span>正常<span class="num">44</span></button>
+          <button onclick="show('list','risk')"><span class="dot" style="background:var(--amber)"></span>存疑<span class="num">3</span></button>
+          <button onclick="show('list','risk')"><span class="dot" style="background:var(--ink)"></span>幽靈<span class="num">2</span></button>
+          <button onclick="show('list','risk')"><span class="dot" style="background:var(--line-2)"></span>未確認<span class="num">4</span></button>
+        </div>
+      </div>
+    </div>
+    <div class="rc">
+      <h3>等答案 <span class="more num">4 題</span></h3>
+      <div class="q"><span class="owner client">問水美</span>歐洲消毒驗證（EN 14065）有沒有？<button class="qa-btn" onclick="openLetter('shuimei')">產出 →</button></div>
+      <div class="q"><span class="owner expert">問專家</span>德國 B2B 冷信的法律界線？<button class="qa-btn" onclick="openLetter('lawyer')">產出 →</button></div>
+      <div class="q"><span class="owner us">我們查</span>BAFA 能效補助額度與資格<button class="qa-btn" onclick="toast('已排入查證佇列（原型示意）')">排入 →</button></div>
+      <div class="q"><span class="owner you">您拍板</span>Böge 存疑——確認再寄或剔除？<button class="qa-btn" onclick="decideBoge(this)">決定 →</button></div>
+    </div>
+    <div class="rc">
+      <div class="assist">
+        <div class="at"><svg class="i" viewBox="0 0 24 24"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3z"/></svg>問 Green Sigra</div>
+        <span class="chip" onclick="ask(this,'steyer')">為什麼 Steyer 排第一？</span>
+        <span class="chip" onclick="ask(this,'deadline')">哪個期限最急？</span>
+        <span class="chip" onclick="ask(this,'ghost')">幽靈公司是怎麼抓到的？</span>
+        <div class="ans-box"></div>
+        <div class="in"><input class="askin" placeholder="問名單上的任何一家…" aria-label="提問"><button class="send" onclick="askFree(this)">問</button></div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<nav class="bnav" aria-label="行動版導航">
+  <button class="on" data-view="dash"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>總覽</button>
+  <button data-view="list"><svg class="i" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/></svg>名單</button>
+  <button data-view="signals"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8a6 6 0 0 1 0 8.4M7.8 16.2a6 6 0 0 1 0-8.4"/></svg>訊號</button>
+  <button data-view="materials"><svg class="i" viewBox="0 0 24 24"><path d="M4 4h16a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/><path d="M3 6l9 7 9-7"/></svg>素材</button>
+  <button data-view="clocks"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>時鐘</button>
+  <button data-view="results"><svg class="i" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>回報</button>
+  <button data-view="sources"><svg class="i" viewBox="0 0 24 24"><path d="M12 3l9 4.5-9 4.5-9-4.5L12 3z"/><path d="M3 12.5l9 4.5 9-4.5"/></svg>來源</button>
+</nav>
+
+<div class="modal-bg hidden" id="modalBg" onclick="if(event.target===this)closeModal()">
+  <div class="modal" role="dialog" aria-modal="true">
+    <h3 id="mTitle"></h3><div class="ms" id="mSub"></div>
+    <div class="body" id="mBody"></div>
+    <div class="row"><button class="btn" onclick="closeModal()">關閉</button><button class="btn p" onclick="toast('已複製到剪貼簿（原型示意）');closeModal()">複製內容</button></div>
+  </div>
+</div>
+<div id="toast" role="status"></div>
+
+<script>
+/* ── 資料（真實查證 2026-07-06）── */
+const CO=[
+ {n:"Steyer Textilservice",c:"Halsbrücke",reg:"HRB 6341 Chemnitz",sig:"2026-02 世代交棒（創辦人夫婦卸任）",open:"恭賀新任＋省能源",g:["first","sig","sig5"],h:"ok",st:"等素材"},
+ {n:"Ahrens Textil-Service",c:"Elmshorn",reg:"HRB 136 EL Pinneberg",sig:"2025-06 新執行董事 S. Kühl",open:"恭賀新任＋省能源",g:["first","sig","sig5"],h:"ok",st:"等素材"},
+ {n:"Kuntze & Burgheim",c:"Hannover",reg:"HRB 8494 Hannover",sig:"2025-05 換執行董事 U. Raschle",open:"恭賀新任＋省能源",g:["first","sig","sig5"],h:"ok",st:"等素材"},
+ {n:"KDS Textilservice",c:"Sitex 夥伴",reg:"—",sig:"新總經理＋Geiger FM 集團入股",open:"稀缺型（示範夥伴）",g:["first","sig","sig5"],h:"ok",st:"等素材"},
+ {n:"Richter Textilservice",c:"Gochsheim",reg:"HRB 300 Schweinfurt",sig:"2025-02 家族二代進經營層",open:"好奇型（1hr→15min）",g:["first","sig","sig5"],h:"ok",st:"等素材"},
+ {n:"Elis Deutschland",c:"Hamburg · 集團",reg:"Hamburg",sig:"SBTi 承諾已驗證（水/能源/化學品）",open:"ESG 數字版",g:["first","group"],h:"ok",st:"等素材"},
+ {n:"CWS International",c:"Duisburg · 集團",reg:"HRB 8957 Duisburg",sig:"2030 CO₂ 減半目標（未驗證）",open:"目標變數字版",g:["first","group"],h:"ok",st:"等素材"},
+ {n:"Fliegel Textilservice",c:"Berlin",reg:"—",sig:"柏林最大之一 · 醫療線",open:"禮物型（能源分析）",g:["first","berlin"],h:"ok",st:"等素材"},
+ {n:"Wäscherei W. Heim",c:"Berlin",reg:"—",sig:"申報準時 · 穩健",open:"禮物型（能源分析）",g:["first","berlin"],h:"ok",st:"等素材"},
+ {n:"Bestform-Textilpflege",c:"Berlin",reg:"—",sig:"申報準時 · 穩健",open:"禮物型（能源分析）",g:["first","berlin"],h:"ok",st:"等素材"},
+ {n:"Wulff Textil-Service",c:"Kiel",reg:"HRB 1380 KI",sig:"2024-07 新執行董事",open:"第二批",g:["sig"],h:"ok",st:"第二批"},
+ {n:"Saanatex",c:"Sitex 夥伴",reg:"—",sig:"2025-11 換總經理",open:"第二批",g:["sig"],h:"ok",st:"第二批"},
+ {n:"Abel Anger",c:"Bad Reichenhall",reg:"—",sig:"2024 第三代接班",open:"第二批",g:["sig"],h:"ok",st:"第二批"},
+ {n:"MEWA",c:"Wiesbaden · 集團",reg:"Wiesbaden",sig:"形象活躍、查無量化承諾",open:"省錢為主",g:[],h:"ok",st:"第二批"},
+ {n:"Bardusch",c:"Ettlingen · 集團",reg:"HRA 360405 Mannheim",sig:"僅 ISO/形象",open:"純省錢版",g:[],h:"ok",st:"第二批"},
+ {n:"Initial Textil Service",c:"—",reg:"—",sig:"2021 已併入 CWS",open:"—",g:["risk"],h:"ghost",st:"已剔除"},
+ {n:"Haake Textilpflege",c:"Berlin",reg:"已刪除登記",sig:"2006 破產、2010 註銷",open:"—",g:["risk"],h:"ghost",st:"已剔除"},
+ {n:"Böge Textil-Service",c:"Duisburg",reg:"HRA 8301 Duisburg",sig:"財報停 2018 · 持有 Wulff 股權",open:"—",g:["risk"],h:"doubt",st:"待您決定"},
+ {n:"Fischer & Thiele",c:"Berlin",reg:"—",sig:"財報停 2012",open:"—",g:["risk"],h:"doubt",st:"降級"},
+ {n:"COBA → PerDu",c:"München",reg:"—",sig:"2025-07 更名＋換總經理，疑易手",open:"—",g:["risk"],h:"doubt",st:"觀察一季"},
+];
+const SIG=[
+ ["2026-02","Steyer Textilservice","創辦人夫婦卸任執行董事，接班完成","經營層","放進本月第一批 ✓"],
+ ["2026-01","Welscher","有限合夥人異動","股權","監視即可"],
+ ["2025-11","Saanatex","換總經理","經營層","第二批"],
+ ["2025-11","Richter","新授經理人權限（二代 F. Kolbe）","經營層","已在第一批"],
+ ["2025-08","ITEX Gaebler","合夥人結構變更","股權","監視即可"],
+ ["2025-07","COBA (München)","更名 PerDu＋換總經理","經營層","⚠ 疑易手，觀察"],
+ ["2025-06","Ahrens","新執行董事 S. Kühl","經營層","已在第一批"],
+ ["2025-05","Kuntze & Burgheim","U. Raschle 接任執行董事","經營層","已在第一批"],
+ ["2025-04","Kotzenberg","資本調整 €660,480","股權","監視即可"],
+ ["2025-02","Richter","一次新任兩名執行董事","經營層","已在第一批"],
+ ["2025-02","W. Marwitz","新授經理人（K. Gwenner）","經營層","第二批"],
+ ["2024-12","Böge","登錄持有 Wulff 股權","股權","⚠ 疑集團化，待決定"],
+ ["2024-10","Merk","撤銷一名經理人授權","經營層","監視即可"],
+ ["2024-07","Wulff","新執行董事 D. Regauer","經營層","第二批"],
+ ["2024–25","KDS","新總經理＋Geiger FM 入股","經營層＋股權","已在第一批"],
+ ["2024","Abel Anger","第三代接班","經營層","第二批"],
+];
+const LETTERS={
+ shuimei:{t:"給水美的提問信（草稿）",s:"收件：水美創新科技 · 主旨：歐洲市場前的三個確認",b:`江總好：
+
+為了規劃 Water Beauty 的歐洲市場，有三件事想跟您確認：
+
+一、咱們的離子水洗程，有沒有做過歐洲的消毒效力驗證（歐洲醫療洗衣採用 EN 14065 標準）？若目前只有 SGS 台灣與美國 EPA 的報告也沒關係，先讓我們知道現況即可。
+
+二、歐洲目前有沒有任何實績或進行中的案子？若還沒有，荷蘭政府補助 7 月 30 日截止收件，正好能補貼示範案的費用——我們已備好一批有補助需求的荷蘭名單。
+
+三、進歐洲您希望直接賣給終端工廠，還是先找當地工程商作經銷夥伴？這決定我們準備哪一種名單與素材。
+
+這三個答案到位，下週即可把德國與荷蘭的第一批名單給您。
+
+Yoshi Design Lab · Green Sigra`},
+ lawyer:{t:"給律師／外貿協會的諮詢單（草稿）",s:"主旨：台灣廠商對德國 B2B 開發的合法接觸方式",b:`諮詢背景：台灣設備製造商擬開發德國商業洗衣業（B2B），無既有業務關係。
+
+想確認的三個問題：
+
+1. 無既有關係之下，寄送 B2B 開發 email 在德國《反不正當競爭法》(UWG §7) 下的界線？「推定同意」在設備採購情境如何認定？
+
+2. 寄送紙本商業信件（實體郵件）是否無需事先同意？有無標示義務？
+
+3. 展會取得名片後的 email 跟進，是否構成合法的既有接觸？電話跟進的界線？
+
+背景資料：目標對象約 50 家德國公司，均為法院登記之營業實體。`}
+};
+/* ── 路由 ── */
+const VIEWS=["dash","list","signals","materials","results","clocks","sources"];
+function show(v,filter){
+ VIEWS.forEach(x=>document.getElementById("v-"+x).classList.add("hidden"));
+ document.getElementById("v-"+v).classList.remove("hidden");
+ document.querySelectorAll(".rail-l .nv,.bnav button").forEach(b=>b.classList.toggle("on",b.dataset.view===v));
+ document.querySelector(".main").scrollTop=0; window.scrollTo(0,0);
+ if(v==="list")renderList(filter||"all");
+ if(v==="dash"){renderDash("sig5");animate()}
+ if(v==="signals")renderSig();
+}
+document.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click",()=>show(b.dataset.view)));
+/* ── 渲染 ── */
+const pill=h=>h==="ghost"?'<span class="pill ghost">🚨 幽靈</span>':h==="doubt"?'<span class="pill warn"><span class="d"></span>⚠ 存疑</span>':'<span class="pill ok"><span class="d"></span>✓ 正常</span>';
+const stPill=s=>s==="已剔除"?'<span class="pill bad"><span class="d"></span>已剔除</span>':s==="等素材"?'<span class="pill warn"><span class="d"></span>等素材</span>':'<span class="pill sig"><span class="d"></span>'+s+'</span>';
+function rowHTML(o,cols){
+ const name=(o.h==="ghost"?'<span style="text-decoration:line-through">'+o.n+'</span>':o.n);
+ return '<tr onclick="openCo(\''+o.n.replace(/'/g,"\\'")+'\')">'+cols(o,name)+'</tr>';
+}
+function renderDash(f){
+ document.querySelectorAll("#dashTabs button").forEach(b=>b.classList.toggle("on",b.dataset.f===f));
+ document.getElementById("dashRows").innerHTML=CO.filter(o=>o.g.includes(f)).map(o=>rowHTML(o,(o,name)=>
+  '<td><div class="co">'+name+'</div><div class="sub">'+o.c+'</div></td><td><span class="pill sig"><span class="d"></span>'+o.sig+'</span></td><td class="mono sub">'+o.reg+'</td><td>'+o.open+'</td><td>'+stPill(o.st)+'</td>')).join("");
+}
+document.getElementById("dashTabs").addEventListener("click",e=>{const b=e.target.closest("button");if(b)renderDash(b.dataset.f)});
+function renderList(f){
+ document.querySelectorAll("#listTabs button").forEach(b=>b.classList.toggle("on",b.dataset.f===f));
+ const rows=CO.filter(o=>f==="all"?true:o.g.includes(f)||(f==="sig"&&o.g.includes("sig5")));
+ document.getElementById("listTitle").textContent={all:"全部（載入 20 家代表）",first:"第一批 10 家",sig:"有時機訊號",risk:"剔除／存疑 5 家（另有 2 個地址勘誤，已修正、仍可寄）"}[f];
+ document.getElementById("listRows").innerHTML=rows.map(o=>rowHTML(o,(o,name)=>
+  '<td><div class="co">'+name+'</div><div class="sub">'+o.c+'</div></td><td>'+pill(o.h)+'</td><td class="sub">'+o.sig+'</td><td class="mono sub">'+o.reg+'</td><td>'+stPill(o.st)+'</td>')).join("");
+}
+document.getElementById("listTabs").addEventListener("click",e=>{const b=e.target.closest("button");if(b)renderList(b.dataset.f)});
+function renderSig(){
+ document.getElementById("sigRows").innerHTML=SIG.map(s=>'<tr onclick="openCo(\''+s[1].replace(/'/g,"\\'")+'\')"><td class="num sub">'+s[0]+'</td><td class="co">'+s[1]+'</td><td>'+s[2]+'</td><td><span class="pill '+(s[3].includes("經營")?"sig":"warn")+'"><span class="d"></span>'+s[3]+'</span></td><td class="sub">'+s[4]+'</td></tr>').join("");
+}
+/* ── 公司詳情 ── */
+function openCo(n){
+ const o=CO.find(x=>x.n===n);
+ const b=o?("城市／類別："+o.c+"\n登記："+o.reg+"\n健檢："+(o.h==="ghost"?"幽靈（勿寄）":o.h==="doubt"?"存疑（先確認）":"正常")+"\n訊號："+o.sig+"\n建議開場："+o.open+"\n狀態："+o.st+"\n\n（完整版此處顯示：證據快照連結、財報提交紀錄、往來歷史）"):("訊號來源公司：完整版此處顯示該公司檔案。");
+ openModal(n,"公司檔案 · 資料查證日 2026-07-06",b);
+}
+/* ── modal ── */
+function openModal(t,s,b){document.getElementById("mTitle").textContent=t;document.getElementById("mSub").textContent=s;document.getElementById("mBody").textContent=b;document.getElementById("modalBg").classList.remove("hidden")}
+function closeModal(){document.getElementById("modalBg").classList.add("hidden")}
+function openLetter(k){const L=LETTERS[k];openModal(L.t,L.s,L.b)}
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeModal()});
+/* ── 其他互動 ── */
+let tT;function toast(m){const e=document.getElementById("toast");e.textContent=m;e.classList.add("show");clearTimeout(tT);tT=setTimeout(()=>e.classList.remove("show"),2800)}
+function scanSignals(btn){btn.disabled=true;const old=btn.innerHTML;btn.innerHTML="掃描中…";setTimeout(()=>{btn.innerHTML=old;btn.disabled=false;toast("掃描完成：53 家登記無新異動、補助頁無變化——今天沒有新訊號（誠實回報）")},1600)}
+function decideBoge(el){el.outerHTML='<span style="color:var(--green);font-weight:700;font-size:11.5px">✓ 已記錄：先確認再寄</span>';toast("已記錄您的決定：Böge 先確認經營實況再寄")}
+const ANS={
+ steyer:"Steyer 在 2026-02 完成世代交棒（創辦人 Babatz 夫婦卸任、J. Mader 接手，法院登記 HRB 6341）。新任經營者上任半年內最願意重看設備與供應商——這是 16 筆訊號中最新的一筆經營層異動，所以排第一。",
+ deadline:"荷蘭 DEI+ 補助 7 月 30 日截止（剩 24 天）——它同時解決「急」和「有錢」，影響荷蘭線名單；德國線沒有這麼近的期限，最近的是 2028 電價補貼到期。",
+ ghost:"用法院商業登記反查名錄上的每一家：Initial 的登記顯示 2021 年併入 CWS Workwear；Haake 2006 年破產、2010 年刪除登記。名錄不會告訴你這些，登記會。"
+};
+function ask(chip,k){const d=chip.closest(".assist").querySelector(".ans-box");d.innerHTML='<div class="ans">'+ANS[k]+'</div>';chip.style.borderColor="var(--green)"}
+function askFree(btn){const box=btn.closest(".assist");const inp=box.querySelector(".askin");const v=inp.value.trim();if(!v)return;box.querySelector(".ans-box").innerHTML='<div class="ans">（原型示意）完整版會針對「'+v+'」查名單與訊號庫作答，並附證據連結。</div>';inp.value=""}
+/* 搜尋 */
+document.getElementById("gsearch").addEventListener("input",e=>{
+ const v=e.target.value.trim().toLowerCase();if(v.length<2)return;
+ const hit=CO.find(o=>o.n.toLowerCase().includes(v));
+ if(hit){show("list","all");document.getElementById("listHint").textContent="搜尋命中："+hit.n;}
+});
+document.getElementById("gsearch").addEventListener("keydown",e=>{
+ if(e.key==="Enter"){const v=e.target.value.trim().toLowerCase();const hit=CO.find(o=>o.n.toLowerCase().includes(v));if(hit)openCo(hit.n)}
+});
+/* 圖表點擊 → 訊號頁 */
+document.getElementById("sigchart").addEventListener("click",()=>show("signals"));
+/* ── 動畫 ── */
+const reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
+function setFinal(){
+ document.querySelectorAll("[data-count]").forEach(el=>el.textContent=el.dataset.count);
+ document.querySelectorAll(".seg").forEach(s=>s.style.height=s.dataset.h+"px");
+ document.querySelectorAll(".sbar i").forEach(i=>i.style.width=i.dataset.w+"%");
+}
+function animate(){
+ // 背景分頁或減少動態：直接顯示最終值（rAF 在背景不會跑）
+ if(reduced||document.hidden){setFinal();return}
+ document.querySelectorAll("[data-count]").forEach(el=>{const t=+el.dataset.count;
+  const t0=performance.now(),dur=800;(function s(now){const p=Math.min((now-t0)/dur,1);el.textContent=Math.round(t*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(s)})(t0)});
+ requestAnimationFrame(()=>requestAnimationFrame(()=>{
+  document.querySelectorAll(".seg").forEach(s=>s.style.height=s.dataset.h+"px");
+  document.querySelectorAll(".sbar i").forEach(i=>i.style.width=i.dataset.w+"%");
+ }));
+}
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)setFinal()});
+renderDash("sig5");animate();
+</script>

@@ -1,0 +1,166 @@
+<title>IDDI 訊號雷達 · 今日精選（試做版）</title>
+<style>
+:root{
+  --ink:#16241D; --ink-2:#4A5A50; --ink-3:#7C8A80;
+  --paper:#F5F7F3; --surface:#FFF; --line:#E1E7DF; --line-2:#CBD5C9;
+  --accent:#1F6E50; --accent-deep:#14503A; --accent-wash:#E8F1EC;
+  --verified:#2E5FB7; --verified-wash:#EBF1FA;
+  --media:#A85D0C; --media-wash:#FAF2E6;
+  --danger:#B23A2B; --danger-wash:#FAECEA;
+}
+*{box-sizing:border-box}
+body{margin:0; font-family:"PingFang TC","Noto Sans TC",-apple-system,sans-serif; background:var(--paper); color:var(--ink); font-size:14px; line-height:1.7; padding:28px 18px 60px}
+.wrap{max-width:760px; margin:0 auto}
+h1{font-size:20px; margin:0}
+.meta{font-size:12px; color:var(--ink-3); margin:2px 0 4px}
+.num{font-variant-numeric:tabular-nums}
+.scanbar{background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:10px 16px; font-size:12.5px; color:var(--ink-2); margin:14px 0 22px}
+.scanbar b{color:var(--ink)}
+
+h2{font-size:15px; margin:26px 0 12px; display:flex; align-items:center; gap:10px}
+h2 .count-pill{font-size:11px; font-weight:700; background:var(--line); border-radius:999px; padding:0 9px; color:var(--ink-2)}
+
+/* signal card */
+.sig{background:var(--surface); border:1.5px solid var(--line-2); border-radius:12px; padding:16px 20px; margin-bottom:14px}
+.sig.urgent{border-color:var(--danger)}
+.sig-top{display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:6px}
+.chip{font-size:11.5px; font-weight:700; border-radius:6px; padding:2px 10px}
+.chip.cat{background:var(--media-wash); color:var(--media); border:1px solid #E5C79E}
+.chip.geo{background:var(--paper); color:var(--ink-2); border:1px solid var(--line-2)}
+.badge{display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:700; border-radius:999px; padding:1.5px 10px}
+.badge.v{background:var(--verified-wash); color:var(--verified)}
+.badge.m{background:var(--media-wash); color:var(--media)}
+.sig-date{margin-left:auto; font-size:12px; color:var(--ink-3)}
+.sig h3{margin:2px 0 6px; font-size:15.5px; line-height:1.5}
+.sig .body{font-size:13px; color:var(--ink-2); margin-bottom:10px}
+.sig .body b{color:var(--ink)}
+.trigger{background:var(--accent-wash); border:1px solid #C9DED2; border-radius:8px; padding:10px 14px; font-size:13px}
+.trigger .t-label{font-size:11px; letter-spacing:.1em; font-weight:700; color:var(--accent-deep)}
+.trigger ul{margin:4px 0 0; padding-left:18px}
+.trigger li{margin-bottom:2px}
+.sig-foot{display:flex; gap:14px; flex-wrap:wrap; margin-top:10px; font-size:12px; color:var(--ink-3); border-top:1px dashed var(--line); padding-top:8px}
+.sig-foot a{color:var(--verified); text-decoration:none}
+.sig-foot a:hover{text-decoration:underline}
+.sig-foot .valid.hot{color:var(--danger); font-weight:700}
+
+/* rejected */
+.rej{background:var(--surface); border:1px dashed var(--line-2); border-radius:10px; padding:12px 18px; margin-bottom:10px; opacity:.8}
+.rej .r-title{font-size:13.5px; font-weight:600; color:var(--ink-2)}
+.rej .r-why{font-size:12.5px; color:var(--danger); margin-top:2px}
+.rej .r-gate{font-size:11.5px; color:var(--ink-3)}
+
+/* explainer */
+.how{background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:14px 18px; margin-top:26px; font-size:13px; color:var(--ink-2)}
+.how h3{margin:0 0 6px; font-size:13.5px; color:var(--ink)}
+.foot{margin-top:20px; font-size:11.5px; color:var(--ink-3)}
+</style>
+
+<div class="wrap">
+  <h1>🌿 IDDI 訊號雷達 · 今日精選</h1>
+  <div class="meta">試做版 · 2026-07-05 · 情境客戶：泓昇環工（廢水處理設備 → 歐洲）</div>
+  <div class="scanbar">今天掃了 <b>4 條追蹤線</b>（歐盟廢水法規、荷蘭補助、SBTi 承諾名單、品牌稽核）共 <b class="num">40</b> 則消息 → 通過三關測試 <b class="num">4</b> 則、丟棄 <b class="num">36</b> 則。<b>全部是剛抓的真實資料。</b></div>
+
+  <h2>✅ 合格訊號 <span class="count-pill num">4</span></h2>
+
+  <div class="sig urgent">
+    <div class="sig-top">
+      <span class="chip cat">補助資金</span><span class="chip geo">🇳🇱 荷蘭</span><span class="badge v">官方公告</span>
+      <span class="sig-date num">07-05 掃到</span>
+    </div>
+    <h3>荷蘭 DEI+ 能源創新補助，7 月 30 日截止收件——只剩 25 天</h3>
+    <div class="body">RVO 的 DEI+（能源與氣候創新示範補助）收件到 <b>2026-07-30</b>。另外兩個窗口也確認了：SDE++ 大輪 <b>9/22–10/22 開放，預算 80 億歐元</b>；循環經濟類 DEI+ 收到 12/17。想拿補助的荷蘭工廠，設備採購決策就在這幾個月。</div>
+    <div class="trigger"><span class="t-label">👉 觸發動作</span>
+      <ul>
+        <li>名單影響：<b>AquaTech（經銷）與荷蘭直客 5 家</b>——接觸時點提前到「本月內」</li>
+        <li>素材影響：荷蘭版開發信加一句「7/30 前送件還來得及，9 月還有 80 億歐元的大輪」</li>
+      </ul>
+    </div>
+    <div class="sig-foot">
+      <span>來源：<a href="https://business.gov.nl/subsidies-and-schemes/demonstration-energy-innovation-dei-subsidy/">business.gov.nl（荷蘭政府）↗</a></span>
+      <span class="valid hot">有效期：2026-07-30 截止，過期作廢</span>
+    </div>
+  </div>
+
+  <div class="sig">
+    <div class="sig-top">
+      <span class="chip cat">法規動態</span><span class="chip geo">🇪🇺 歐盟</span><span class="badge v">官方公告</span>
+      <span class="sig-date num">07-05 掃到</span>
+    </div>
+    <h3>歐盟廢水新指令期限表確認：2027 年 7 月 31 日前各國要立法完成</h3>
+    <div class="body">城市廢水處理指令（UWWTD 2024/3019）已於 2025-01-01 生效，各國要在 <b>2027-07-31 前轉成國內法、2027-08-01 起適用</b>。另外挖到一條新壓力線：藥品與化妝品製造商要負擔 <b>80% 的微污染物清除費用（2028 年底前）</b>——這是本來不在名單上的新產業。</div>
+    <div class="trigger"><span class="t-label">👉 觸發動作</span>
+      <ul>
+        <li>倉庫更新：法規期限表寫入三個日期（生效／轉國內法／適用）</li>
+        <li>市場影響：<b>「製藥廠、化妝品廠」加入候選客群</b>，下輪圈選時提給使用者拍板</li>
+      </ul>
+    </div>
+    <div class="sig-foot">
+      <span>來源：<a href="https://eur-lex.europa.eu/eli/dir/2024/3019/oj/eng">EUR-Lex 指令原文 ↗</a></span>
+      <span class="valid">有效期：長期（期限表資料）</span>
+    </div>
+  </div>
+
+  <div class="sig">
+    <div class="sig-top">
+      <span class="chip cat">大客戶承諾</span><span class="chip geo">🌍 全球</span><span class="badge v">官方公告</span>
+      <span class="sig-date num">07-05 掃到</span>
+    </div>
+    <h3>SBTi 新版淨零標準（6/11 發布）：對供應商的要求變硬了</h3>
+    <div class="body">SBTi 於 <b>2026-06-11 發布 Net-Zero Standard 2.0</b>，明確加重「供應商參與」的要求；承諾企業已破萬家（佔全球市值 40%）。意思是：<b>已承諾的大品牌會更用力去查它的供應商</b>——間接壓力這條路變寬了。</div>
+    <div class="trigger"><span class="t-label">👉 觸發動作</span>
+      <ul>
+        <li>倉庫更新：下次比對承諾名單時，標記「2.0 標準適用」的公司</li>
+        <li>名單影響：<b>Hoffmann 這類「幫品牌代工」的客群</b>，壓力論述升級——寫進素材</li>
+      </ul>
+    </div>
+    <div class="sig-foot">
+      <span>來源：<a href="https://sciencebasedtargets.org/corporate-net-zero-standard-v2">SBTi 官方 ↗</a></span>
+      <span class="valid">有效期：長期（結構性變化）</span>
+    </div>
+  </div>
+
+  <div class="sig">
+    <div class="sig-top">
+      <span class="chip cat">法規動態</span><span class="chip geo">🇪🇺 歐盟·紡織</span><span class="badge m">媒體報導 → 需回查</span>
+      <span class="sig-date num">07-05 掃到</span>
+    </div>
+    <h3>紡織業的 ESPR 法案傳出 2026–27 通過；六成成衣廠拿不出要求的數據</h3>
+    <div class="body">產業媒體報導：ESPR 紡織品細則預計 <b>2026–2027 通過</b>，成衣列為第一波優先品項；約 <b>60% 製造商目前拿不出</b>法案要求的用水／能源數據。若屬實，染整廠的壓力會再加一層。</div>
+    <div class="trigger"><span class="t-label">👉 觸發動作</span>
+      <ul>
+        <li><b>先回查官方來源</b>（EUR-Lex 的 ESPR 進度）確認時程——媒體消息不能直接改名單</li>
+        <li>確認後：染整客群的開發信補充這條，時機判斷加新期限</li>
+      </ul>
+    </div>
+    <div class="sig-foot">
+      <span>來源：<a href="https://www.carbonfact.com/textile-regulations-hub">Carbonfact（產業媒體）↗</a></span>
+      <span class="valid">有效期：至官方時程公告為止</span>
+    </div>
+  </div>
+
+  <h2>🗑 今天丟掉的（示範三則，其餘類同）<span class="count-pill num">36</span></h2>
+
+  <div class="rej">
+    <div class="r-title">「SBTi 目標設定終極指南 2026」（顧問公司部落格）</div>
+    <div class="r-why">✗ 丟棄：這是教學文，不是變化——世界沒有任何事情改變</div>
+    <div class="r-gate">卡在第 2 關（沒有改變壓力或時機）</div>
+  </div>
+  <div class="rej">
+    <div class="r-title">「成衣認證合規指南：如何挑選染整廠」（供應商行銷內容）</div>
+    <div class="r-why">✗ 丟棄：內容行銷，想賣認證服務給我們，不是市場變化</div>
+    <div class="r-gate">卡在第 2、3 關</div>
+  </div>
+  <div class="rej">
+    <div class="r-title">「韓華人壽加速非銀行業務擴張」（你截圖的那則）</div>
+    <div class="r-why">✗ 丟棄：不在任何一條追蹤線上、不改變任何客戶的時機、想不出觸發動作</div>
+    <div class="r-gate">三關全部沒過——除非哪天接了賣保險業的客戶，才會為它開一條個案雷達</div>
+  </div>
+
+  <div class="how">
+    <h3>這頁是怎麼做出來的（給工程師的流程）</h3>
+    ① 按追蹤清單的關鍵字掃來源（今天掃了 4 條線）→ ② 每則消息過三關：<b>對得上追蹤清單嗎？改變時機或壓力嗎？能觸發具體動作嗎？</b>→ ③ 過關的補齊六個欄位（類別、可信度、連結、觸發動作、影響哪些名單、有效期）→ ④ 官方來源直接入庫；媒體來源標「需回查」，回查通過才准改名單。<br>
+    今天這一輪是 Claude 手工示範；自動化之後，這就是每天早上等在信箱裡的那份「助理報告」。
+  </div>
+
+  <p class="foot">試做版 · 資料為 2026-07-05 實際搜尋結果 · 情境名單（AquaTech、Hoffmann）沿用 mockup 的示範故事線 · Green Sigra</p>
+</div>
