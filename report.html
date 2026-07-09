@@ -1,0 +1,209 @@
+<title>水美 Water Beauty · 階段一真實試跑</title>
+<style>
+:root{
+  --ink:#16241D; --ink-2:#4A5A50; --ink-3:#7C8A80;
+  --paper:#F5F7F3; --surface:#FFF; --line:#E1E7DF; --line-2:#CBD5C9;
+  --accent:#1F6E50; --accent-deep:#14503A; --accent-wash:#E8F1EC;
+  --verified:#2E5FB7; --verified-wash:#EBF1FA;
+  --media:#A85D0C; --media-wash:#FAF2E6;
+  --danger:#B23A2B; --danger-wash:#FAECEA;
+}
+*{box-sizing:border-box}
+body{margin:0; font-family:"PingFang TC","Noto Sans TC",-apple-system,sans-serif; background:var(--paper); color:var(--ink); font-size:14px; line-height:1.7; padding:28px 18px 60px}
+.wrap{max-width:800px; margin:0 auto}
+h1{font-size:20px; margin:0}
+.meta{font-size:12px; color:var(--ink-3); margin:2px 0 16px}
+.num{font-variant-numeric:tabular-nums}
+h2{font-size:15px; margin:28px 0 12px; padding-left:10px; border-left:3px solid var(--accent)}
+p{margin:0 0 10px; font-size:13.5px; color:var(--ink-2)}
+p b{color:var(--ink)}
+
+.tldr{background:var(--ink); color:#E9EFE9; border-radius:10px; padding:18px 22px; margin-bottom:8px}
+.tldr .t-label{font-size:11px; letter-spacing:.14em; font-weight:700; color:#9FD9BC}
+.tldr .t-body{font-size:15px; font-weight:600; line-height:1.8; margin-top:4px}
+.tldr .t-sub{font-size:12.5px; color:#A8BCAF; margin-top:8px}
+
+.badge{display:inline-flex; align-items:center; font-size:11px; font-weight:700; border-radius:999px; padding:1px 9px; white-space:nowrap; vertical-align:2px}
+.badge.v{background:var(--verified-wash); color:var(--verified)}
+.badge.m{background:var(--media-wash); color:var(--media)}
+.badge.own{background:#F0F0EC; color:var(--ink-3); border:1px solid var(--line-2)}
+.badge.ok{background:var(--accent-wash); color:var(--accent-deep)}
+
+/* value cats */
+.vcat{border:1px solid var(--line); border-radius:8px; background:var(--surface); overflow:hidden; margin-bottom:12px}
+.vcat-head{display:flex; align-items:baseline; gap:10px; padding:9px 15px; background:#FAFBF8; border-bottom:1px solid var(--line)}
+.vcat-head .tag{font-size:10.5px; letter-spacing:.1em; font-weight:700; color:var(--accent-deep)}
+.vcat-head h3{margin:0; font-size:13px; font-weight:600; color:var(--ink-2)}
+.vitem{padding:10px 15px; border-bottom:1px dashed var(--line); font-size:13px}
+.vitem:last-child{border-bottom:0}
+.vitem .vi-t{font-weight:700}
+.vitem .vi-d{font-size:12.5px; color:var(--ink-2)}
+
+/* market cards */
+.mkt{background:var(--surface); border:1.5px solid var(--line-2); border-radius:12px; padding:18px 22px; margin-bottom:16px}
+.mkt.p1{border-color:var(--accent)}
+.mkt-top{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:4px}
+.mkt-top .rank{font-size:11px; letter-spacing:.12em; font-weight:700; border-radius:6px; padding:2px 10px}
+.rank.r1{background:var(--accent); color:#fff}
+.rank.r2{background:var(--accent-wash); color:var(--accent-deep)}
+.rank.r3{background:var(--paper); color:var(--ink-3); border:1px solid var(--line-2)}
+.mkt h3{margin:0; font-size:16px}
+.mkt .why{font-size:13px; color:var(--ink-2); margin:8px 0}
+.ev{margin:10px 0; border-top:1px dashed var(--line); padding-top:8px}
+.ev-row{display:flex; gap:8px; align-items:flex-start; font-size:12.5px; color:var(--ink-2); padding:3px 0}
+.ev-row a{color:var(--verified); text-decoration:none}
+.ev-row a:hover{text-decoration:underline}
+.gap-row{background:var(--media-wash); border:1px solid #E5C79E; border-radius:8px; padding:9px 13px; font-size:12.5px; margin-top:8px}
+.gap-row b{color:var(--media)}
+.mkt-cta{display:flex; gap:8px; margin-top:12px}
+.cta-btn{font-size:12.5px; font-weight:600; border-radius:6px; padding:5px 16px; border:1px solid var(--line-2); background:var(--surface); color:var(--ink-2)}
+
+/* questions */
+.qpanel{border:1px solid #E5C79E; background:#FFFDF8; border-radius:10px; padding:14px 18px; margin-bottom:12px}
+.qpanel h3{font-size:13.5px; margin:0 0 6px}
+.qitem{padding:8px 0; border-bottom:1px dashed var(--line); font-size:13px}
+.qitem:last-child{border-bottom:0}
+.qitem b{color:var(--media)}
+
+/* appendix */
+details{background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:12px 18px; margin-top:20px; font-size:12.5px; color:var(--ink-2)}
+summary{font-weight:700; cursor:pointer; font-size:13px; color:var(--ink)}
+details table{border-collapse:collapse; width:100%; margin-top:10px; font-size:12px}
+details th{text-align:left; color:var(--ink-3); font-size:11px; padding:5px 8px; border-bottom:1px solid var(--line)}
+details td{padding:5px 8px; border-bottom:1px dashed var(--line); vertical-align:top}
+.foot{margin-top:22px; font-size:11.5px; color:var(--ink-3)}
+.vbanner{background:var(--verified-wash); border:1px solid #AFC6EA; border-radius:8px; padding:10px 16px; font-size:12.5px; color:var(--ink-2); margin-bottom:16px}
+.vbanner b{color:var(--verified)}
+.axes{display:flex; gap:14px; flex-wrap:wrap; margin:8px 0 2px}
+.axis{display:flex; align-items:center; gap:7px; font-size:12px; color:var(--ink-2)}
+.axis .bar{width:70px; height:7px; border-radius:4px; background:var(--line)}
+.axis .bar i{display:block; height:100%; border-radius:4px}
+.axis.hi .bar i{background:var(--danger); width:85%}
+.axis.md .bar i{background:var(--media); width:55%}
+.axis.lo .bar i{background:var(--line-2); width:25%}
+.axis b{font-size:11px}
+.pitch{background:var(--verified-wash); border:1px solid #AFC6EA; border-radius:8px; padding:10px 14px; font-size:12.5px; margin-top:8px}
+.pitch b{color:var(--verified)}
+.rerank{font-size:11px; font-weight:700; border-radius:6px; padding:2px 10px; background:var(--danger-wash); color:var(--danger)}
+</style>
+
+<div class="wrap">
+  <h1>💧 水美創新科技 Water Beauty — 階段一：產品與市場</h1>
+  <div class="meta">真實試跑 v2 · 2026-07-05 · 依據：水美英文版型錄（16 頁）＋ 當日即時查證 · IDDI by Green Sigra</div>
+
+  <div class="vbanner"><b>v2 改了什麼：</b>每個市場現在看兩件事——「<b>他急不急</b>（壓力）」和「<b>他動得了嗎</b>（有沒有錢、換得了嗎）」。只看壓力會犯一個錯：把喊救命但沒錢的客戶排第一。加上第二個尺之後，<b>排序變了</b>：荷蘭升到第一，德國改用「帶補助去救人」的打法。</div>
+
+  <div class="tldr">
+    <div class="t-label">30 秒結論</div>
+    <div class="t-body">最快的一單在<b>荷蘭</b>：客戶有補助可拿（7/30 截止、9 月還有 80 億歐元大輪）——<b>又急、又有錢，先打</b>。<br>最大的市場在<b>德國洗衣業</b>：他們最痛，但正因為太痛所以沒錢——<b>開發信不要賣設備，要說「設備的錢，政府補助出一部分，我幫你算」</b>。</div>
+    <div class="t-sub">歐盟洗劑新規（2026/405）是長期助攻，放在信的結尾當提醒；不當主訴求。</div>
+  </div>
+
+  <h2>一、你的產品憑什麼賣（從型錄萃取，標明證據等級）</h2>
+
+  <div class="vcat">
+    <div class="vcat-head"><span class="tag">財務效益</span><h3>客戶最重視的採購理由</h3></div>
+    <div class="vitem"><div class="vi-t">免蒸氣加熱＋水電省 50–60% <span class="badge own">型錄數據</span><span class="badge v">痛點已由第三方證實</span></div>
+      <div class="vi-d">德國產業媒體：能源占紡織服務業成本約 11%、「蒸氣鍋爐短期內沒有技術替代方案」——水美等於直接拆掉客戶最痛的那條成本線。<b>這是開發信的第一段。</b></div></div>
+    <div class="vitem"><div class="vi-t">洗劑採購、倉儲、耗材管理歸零 <span class="badge own">型錄數據</span></div>
+      <div class="vi-d">化學洗劑整條供應鏈的錢和管理工全部消失。醫療洗衣案例：單缸 1 小時 → 15 分鐘，產能翻倍。</div></div>
+  </div>
+  <div class="vcat">
+    <div class="vcat-head"><span class="tag">營運效益</span><h3>與同業比較的優勢</h3></div>
+    <div class="vitem"><div class="vi-t">不改機、不停產——接上現有洗衣設備就能用 <span class="badge own">型錄數據</span></div>
+      <div class="vi-d">對「不能停」的醫院中央洗衣房和商業洗衣廠，導入門檻幾乎為零。</div></div>
+    <div class="vitem"><div class="vi-t">衛生等級有第三方背書 <span class="badge v">SGS 台灣 · Microbac（美國 EPA GLP）· 中科院</span></div>
+      <div class="vi-d">物理性滅菌、無抗藥性路徑；色牢度 4–5（CNS 測試）——品質疑慮有現成的擋箭牌。</div></div>
+  </div>
+  <div class="vcat">
+    <div class="vcat-head"><span class="tag">策略效益</span><h3>讓客戶必須現在行動的</h3></div>
+    <div class="vitem"><div class="vi-t">廢水零界面活性劑＝法規免疫 <span class="badge v">官方（歐盟 2026/405 已公布）</span></div>
+      <div class="vi-d">歐盟新洗劑法規 2026 年 3 月公布：界面活性劑全面要求完全生物降解，2028 年起評估對「工業與機構洗衣洗劑」設磷限值。用洗劑的同業要一路追法規；水美的客戶直接跳出這個賽局。</div></div>
+    <div class="vitem"><div class="vi-t">專利佈局已覆蓋目標市場 <span class="badge own">台灣 · 美國 · 日本 · 歐盟 · 德國</span></div>
+      <div class="vi-d">德國專利已到位——正好是第一優先市場。</div></div>
+  </div>
+
+  <h2>二、該打哪裡（四張市場卡，等您圈選）</h2>
+
+  <div class="mkt p1">
+    <div class="mkt-top"><span class="rank r1">第一優先</span><span class="rerank">↑ v2 升上來的</span><h3>🇳🇱 荷蘭 — 有補助可拿的洗衣與飯店業者</h3></div>
+    <div class="axes">
+      <div class="axis md"><b>他急不急</b><span class="bar"><i></i></span>中——補助期限製造急迫感</div>
+      <div class="axis hi"><b>他動得了嗎</b><span class="bar"><i></i></span>高——政府出錢，不用動自己口袋</div>
+    </div>
+    <div class="why">兩個尺都亮的唯一市場。DEI+ 能源創新補助 <b>7 月 30 日截止</b>（循環經濟類收到 12/17；SDE++ 大輪 9/22 開放、預算 80 億歐元）。水美「省 50–60% 能源」的示範案正對補助的胃口。<b>切入方式：找正在幫客戶申請補助的荷蘭設備工程商合作</b>——他們手上有名單、缺亮點設備。</div>
+    <div class="ev">
+      <div class="ev-row"><span class="badge v">官方</span><span>DEI+ 收件至 2026-07-30——<a href="https://business.gov.nl/subsidies-and-schemes/demonstration-energy-innovation-dei-subsidy/">business.gov.nl ↗</a></span></div>
+      <div class="ev-row"><span class="badge v">官方</span><span>SDE++ 2026 輪：9/22–10/22，80 億歐元——<a href="https://english.rvo.nl/subsidies-financing/sde/apply">RVO ↗</a></span></div>
+    </div>
+    <div class="gap-row"><b>進場前要補的證據：</b>DEI+ 是否接受外國設備商參與荷蘭企業的示範案（需查申請資格細則，或直接問 RVO）。</div>
+    <div class="mkt-cta"><button class="cta-btn">✅ 開發</button><button class="cta-btn">⏸ 暫緩</button></div>
+  </div>
+
+  <div class="mkt p1">
+    <div class="mkt-top"><span class="rank r2">第二優先・換打法</span><span class="rerank">↓ v2 降下來、素材全換</span><h3>🇩🇪 德國 — 商業洗衣廠・醫療紡織服務商</h3></div>
+    <div class="axes">
+      <div class="axis hi"><b>他急不急</b><span class="bar"><i></i></span>高——產業公開喊「存亡問題」</div>
+      <div class="axis lo"><b>他動得了嗎</b><span class="bar"><i></i></span>低——正因為太痛，資本支出凍結；電價補貼剛到手，止痛藥吃著</div>
+    </div>
+    <div class="why">最痛的市場，但<b>喊救命的人沒錢動手術</b>——所以不能用「買我的設備」開場。市場結構仍然很好：RAL-GZ 992 認證洗衣廠是<b>公開名錄的封閉群體</b>，名單現成。</div>
+    <div class="pitch"><b>💡 打法整個換掉：</b>開發信第一句不是賣設備，是「<b>德國有能效補助能出設備錢的一部分＋這台不用改機、每月現省能源費——我把回本算給你看</b>」。把客戶的「沒錢」變成我們的切入點：幫他找錢。（德國聯邦能效補助的確切額度與適用性，列入第二階段查證清單）</div>
+    <div class="ev">
+      <div class="ev-row"><span class="badge m">產業媒體</span><span>「爆炸性成本使紡織服務公司面臨存亡問題」——<a href="https://www.newclothmarketonline.com/international-business-pages/germany-exploding-costs-present-textile-service-companies-with-existential-problems/">New Cloth Market ↗</a></span></div>
+      <div class="ev-row"><span class="badge v">官方</span><span>38 億歐元電價補貼效期只到 2028——「補貼結束後怎麼辦」是天然的開場白——<a href="https://www.gleisslutz.com/en/know-how/germany-cuts-costs-electricity-intensive-companies-1-january-2026-new-industrial-electricity-price">Gleiss Lutz ↗</a></span></div>
+      <div class="ev-row"><span class="badge v">官方</span><span>RAL-GZ 992/2 醫療洗衣認證名錄——<a href="https://www.waeschereien.de/en/quality-mark/ral-gz-992/2">認證協會 ↗</a></span></div>
+    </div>
+    <div class="gap-row"><b>進場前要補的證據：</b>① 離子水洗程能否通過 RAL/RKI「消毒洗程」認定（Q1）② 換洗程會不會影響洗衣廠現有認證——轉換成本要先算，別讓客戶拿認證去賭 ③ 德國能效補助的適用額度。<b>醫療線在 Q1 有答案前不啟動，先打非醫療的商業洗衣。</b></div>
+    <div class="mkt-cta"><button class="cta-btn">✅ 開發</button><button class="cta-btn">⏸ 暫緩</button></div>
+  </div>
+
+  <div class="mkt">
+    <div class="mkt-top"><span class="rank r2">中期布局</span><h3>🌍 國際連鎖旅館集團（歐洲據點）</h3></div>
+    <div class="axes">
+      <div class="axis md"><b>他急不急</b><span class="bar"><i></i></span>中——ESG 要交代，但沒有死線</div>
+      <div class="axis hi"><b>他動得了嗎</b><span class="bar"><i></i></span>高——集團有預算、有 ESG 目標要達成</div>
+    </div>
+    <div class="why">SBTi 新版淨零標準（2026-06）加重供應鏈要求，連鎖旅館的 ESG 報告都在找可量化的減碳項目——洗衣是旅館的能源大戶，「零化學＋能源減半」是好寫進報告的數字。有錢但不急，決策慢，適合當第二波持續培養。</div>
+    <div class="ev">
+      <div class="ev-row"><span class="badge v">官方</span><span>SBTi Net-Zero Standard 2.0（2026-06-11 發布）——<a href="https://sciencebasedtargets.org/corporate-net-zero-standard-v2">SBTi ↗</a></span></div>
+    </div>
+    <div class="mkt-cta"><button class="cta-btn">✅ 開發</button><button class="cta-btn">⏸ 暫緩</button></div>
+  </div>
+
+  <div class="mkt">
+    <div class="mkt-top"><span class="rank r3">先放著</span><h3>🇪🇺 紡織加工廠（染整・後處理）</h3></div>
+    <div class="axes">
+      <div class="axis lo"><b>他急不急</b><span class="bar"><i></i></span>低——期限在 2027–2029，還遠</div>
+      <div class="axis md"><b>他動得了嗎</b><span class="bar"><i></i></span>中——體質不一，且水美在紡織製程還沒實測</div>
+    </div>
+    <div class="why">歐盟廢水指令（UWWTD）2027-08 起適用、洗劑法規 2029 全面上路——壓力是真的，但期限還遠，且水美型錄的實績集中在洗衣情境，紡織製程需要另做驗證。<b>放進「先放著」清單，設兩個喚醒條件</b>：① 各國 UWWTD 國內法公布時 ② 水美完成紡織場域實測時。</div>
+    <div class="ev">
+      <div class="ev-row"><span class="badge v">官方</span><span>UWWTD 2024/3019：2027-07-31 前各國立法——<a href="https://eur-lex.europa.eu/eli/dir/2024/3019/oj/eng">EUR-Lex ↗</a></span></div>
+      <div class="ev-row"><span class="badge v">官方</span><span>洗劑法規 2026/405：2029-09-23 起適用——<a href="https://eur-lex.europa.eu/eli/reg/2026/405/oj/eng">EUR-Lex ↗</a></span></div>
+    </div>
+    <div class="mkt-cta"><button class="cta-btn">✅ 開發</button><button class="cta-btn">⏸ 暫緩</button></div>
+  </div>
+
+  <h2>三、AI 想請教您的三個問題</h2>
+  <div class="qpanel">
+    <h3>這三題 AI 查不到、只有水美（或您）能回答——答案會改變市場排序</h3>
+    <div class="qitem"><b>Q1（擋在德國醫療線前面）：</b>水美的離子水洗程，有沒有做過歐洲標準的消毒效力驗證（EN 14065 / RKI 名單）？型錄上是 SGS 台灣與美國 EPA GLP——德國醫療洗衣吃的是自己那套認證。</div>
+    <div class="qitem"><b>Q2（影響所有市場的信任門檻）：</b>水美在歐洲有沒有任何實績或進行中的案子？型錄的醫院案例看起來在台灣——歐洲買家會問「在歐洲洗給我看」。若沒有，第一步可能是找一家願意做示範案的洗衣廠（荷蘭補助正好能出這筆錢）。</div>
+    <div class="qitem"><b>Q3（決定名單長相）：</b>優先走「直接賣給洗衣廠」還是「透過洗衣設備商／工程商經銷」？德國洗衣設備商（Kannegiesser 這類）通路很強——是敵是友，決定第二階段抓什麼名單。</div>
+  </div>
+
+  <details>
+    <summary>附錄：查證過程（給想核對的人）</summary>
+    <table>
+      <tr><th>查什麼</th><th>結果</th><th>可信度</th></tr>
+      <tr><td>產品資料來源</td><td>水美英文型錄 16 頁（單頁-完稿.pdf，2026-05 版）</td><td>自家資料</td></tr>
+      <tr><td>歐盟洗劑/界面活性劑法規</td><td>找到 (EU) 2026/405，2026-03-02 公布、2029-09-23 適用；2028-03 評估工業洗衣洗劑磷限值</td><td>官方（EUR-Lex）</td></tr>
+      <tr><td>德國紡織服務業成本壓力</td><td>產業媒體證實「存亡等級」成本壓力、能源占 11%、蒸氣無替代；政府 38 億電價補貼至 2028</td><td>媒體＋官方</td></tr>
+      <tr><td>德國醫療洗衣認證</td><td>RAL-GZ 992/2 體系（RKI 要求、Hohenstein 年度突擊查核）；「化學-free 洗程認定」查無現成答案 → 轉為 Q1</td><td>官方；缺口誠實標注</td></tr>
+      <tr><td>荷蘭補助窗口</td><td>DEI+ 至 7/30、SDE++ 9/22 起 80 億歐元</td><td>官方（RVO）</td></tr>
+      <tr><td>沒查到的</td><td>水美歐洲實績（→Q2）、DEI+ 外國設備商資格、離子水的 EN 14065 驗證紀錄</td><td>—</td></tr>
+    </table>
+  </details>
+
+  <p class="foot">IDDI 階段一試跑 · 所有藍色「官方」證據均為 2026-07-05 實際查得，連結可點驗 · 下一步：您回答 Q1–Q3 並圈選市場卡 → 階段二開始蒐集名單（RAL 認證洗衣廠名錄是現成起點）· Green Sigra</p>
+</div>
